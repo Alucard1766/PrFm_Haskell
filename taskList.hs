@@ -1,36 +1,34 @@
-getInput :: [String] -> IO ()
+-- (ID,Name)
+type Task = (Int,String)
+
+putTask :: Task -> IO ()
+putTask (id,task) = putStrLn (show id ++ ": " ++ task)
+
+getInput :: [Task] -> IO ()
 getInput tasks = do
     putStrLn ""
-    putStrLn "Current Tasks:"
-    mapM_ putTask (zip [0..] tasks)
-    userInput <- getLine
-    process userInput tasks
+    putStrLn "Current task list:"
+    mapM_ putTask tasks
+    command <- getLine
+    process command tasks
 
-process :: String -> [String] -> IO ()
-process ('+':' ':task)  tasks = getInput (task:tasks)
-process ('-':' ':num )  tasks =
-    case remove (read num) tasks of
-        Nothing -> do
-            putStrLn "No Task with this number found"
-            getInput tasks
-        Just tasks' -> getInput tasks'
-process "q"             tasks = return ()
-process "?"             tasks = do
+process :: String -> [Task] -> IO ()
+process ('+':' ':task) tasks = getInput $ convert task tasks
+process ('-':' ':num ) tasks = getInput $ remove (read num) tasks
+process  "q"           tasks = return ()
+process "?"            tasks = do
     showAvailableCommands
     getInput tasks
-process userInput       tasks = do
-    putStrLn ("Invalid userInput: `" ++ userInput ++ "`")
+process  command       tasks = do
+    putStrLn ("Invalid command: `" ++ command ++ "`")
     getInput tasks
 
-putTask :: (Int, String) -> IO ()
-putTask (n, task) = putStrLn (show n ++ ": " ++ task)
+convert:: String -> [Task] -> [Task]
+convert task [] = [] ++ [(0,task)]
+convert task tasks = tasks ++ [(fst(last tasks)+1,task)]
 
-remove :: Int -> [a] -> Maybe [a]
-remove 0 (_:as) = Just as
-remove n (a:as) = do
-    as' <- remove (n - 1) as
-    return (a:as')
-remove _  []    = Nothing
+remove:: Int -> [Task] -> [Task]
+remove y xs = filter (not . ((==) y) . fst) xs
 
 showAvailableCommands = do
     putStrLn "Commands:"
@@ -42,4 +40,3 @@ showAvailableCommands = do
 main = do
     showAvailableCommands
     getInput []
-
