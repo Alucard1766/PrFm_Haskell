@@ -43,15 +43,17 @@ showAvailableCommands = do
     putStrLn "?            - Show this help"
 
 writeToFile:: [Task] -> IO()
-writeToFile [] = getInput []
 writeToFile tasks = do
     fileref <- openFile "task.txt" WriteMode 
-    hPutStrLn fileref (writeTask (head tasks))
+    myPutStrLn fileref tasks
     hClose fileref
     getInput tasks
 
-writeTask:: Task -> String
-writeTask (id,task) = "ID: " ++ show id ++ " " ++ task
+myPutStrLn::  Handle -> [Task] -> IO()
+myPutStrLn h [] = return()
+myPutStrLn h ((id,task):xs) = do
+    hPutStrLn h ("ID: " ++ show id ++ " Task: " ++ task)
+    myPutStrLn h xs
 
 main = do
     showAvailableCommands
