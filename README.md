@@ -3,4 +3,4 @@ Mit dieser kleinen Haskell Applikation können Einträge in einer Taskliste erfa
 
 https://moodle.hsr.ch/mod/wiki/view.php?pageid=411&group=0
 
-![Imgur](https://i.imgur.com/U6mqsDk.png)
+![Imgur](https://i.imgur.com/RyRMEoH.png)
